@@ -1,0 +1,49 @@
+---
+import Message from "./message.astro";
+---
+
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⭐</text></svg>"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <title>Kudos! ⭐</title>
+    <script src="/htmx.org@1.9.9.min.js" is:inline></script>
+  </head>
+  <body class="h-full">
+    <div class="h-full flex items-center justify-center">
+      <div>
+        <button
+          hx-get="/message/"
+          hx-target="#message"
+          class="h-10 px-4 py-2 block mx-auto mb-2 rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gray-900 text-white hover:bg-gray-700 hover:text-gray-200 transition-colors duration-200"
+        >
+          Click to get another
+        </button>
+        <button
+          class="h-10 px-4 py-2 block mx-auto mb-2 rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gray-900 text-white hover:bg-gray-700 hover:text-gray-200 transition-colors duration-200"
+          id="copy"
+        >
+          Copy markdown
+        </button>
+        <div id="message">
+          <Message />
+        </div>
+      </div>
+    </div>
+    <script>
+      const copy = document.getElementById("copy");
+      copy?.addEventListener("click", () => {
+        const messageWrapper = document.getElementById("message");
+        const image = messageWrapper?.querySelector("img")?.src;
+        const message = messageWrapper?.querySelector("p")?.innerText;
+
+        navigator.clipboard.writeText(`![image](${image})\n${message}`);
+      });
+    </script>
+  </body>
+</html>
