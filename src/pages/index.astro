@@ -1,5 +1,6 @@
 ---
-import Message from "./message.astro";
+import images from "../content/images.json";
+import messages from "../content/messages.json";
 ---
 
 <html lang="en" class="h-full">
@@ -12,17 +13,16 @@ import Message from "./message.astro";
     />
     <meta name="generator" content={Astro.generator} />
     <title>Kudos! ⭐</title>
-    <script src="/htmx.org@1.9.9.min.js" is:inline></script>
+    <meta name="description" content="Write funny kudos for your team" />
   </head>
   <body class="h-full">
     <div class="h-full flex items-center justify-center">
       <div>
         <button
-          hx-get="/message/"
-          hx-target="#message"
+          id="get-another"
           class="h-10 px-4 py-2 block mx-auto mb-2 rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gray-900 text-white hover:bg-gray-700 hover:text-gray-200 transition-colors duration-200"
         >
-          Click to get another
+          Get another kudos
         </button>
         <button
           class="h-10 px-4 py-2 block mx-auto mb-2 rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gray-900 text-white hover:bg-gray-700 hover:text-gray-200 transition-colors duration-200"
@@ -31,7 +31,10 @@ import Message from "./message.astro";
           Copy markdown
         </button>
         <div id="message">
-          <Message />
+          <div class="flex w-96 h-96 items-center justify-center">
+            <img alt="" class="h-full w-full object-contain" />
+          </div>
+          <p class="text-center mt-2"></p>
         </div>
       </div>
     </div>
@@ -44,6 +47,24 @@ import Message from "./message.astro";
 
         navigator.clipboard.writeText(`![image](${image})\n${message}`);
       });
+    </script>
+    <script define:vars={{ images, messages }}>
+      function setKudos() {
+        const image = images[Math.floor(Math.random() * images.length)];
+        const message = messages[Math.floor(Math.random() * messages.length)];
+
+        const messageWrapper = document.getElementById("message");
+        messageWrapper
+          .querySelector("img")
+          .setAttribute(
+            "src",
+            `https://kudos-generator.s3.us-east-1.amazonaws.com/${image}`
+          );
+        messageWrapper.querySelector("p").innerHTML = message;
+      }
+      setKudos();
+      const getAnother = document.getElementById("get-another");
+      getAnother?.addEventListener("click", setKudos);
     </script>
   </body>
 </html>
